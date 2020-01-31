@@ -64,19 +64,28 @@
             }));
         }
 
-        sendBtn.onclick = () => {
-            socket.send(JSON.stringify({
-                type: 'message',
-                data: textInput.textContent
-            }));
-        }
-
         startBtn.onclick = () => {
             socket.send(JSON.stringify({
                 type: 'start-game',
                 data: 'start game'
             }));
         }
+        
+        const sendMsg = () => {
+            socket.send(JSON.stringify({
+                type: 'message',
+                data: textInput.textContent
+            }));
+        }
+        
+        sendBtn.onclick = sendMsg;
+        document.onkeydown = event => {
+            if (event.keyCode === 13) {
+                sendMsg();
+            }
+        }
+
+        sendMsg;
 
         socket.onmessage = event => {
             const data = JSON.parse(event.data);
@@ -88,6 +97,7 @@
             div.textContent = `${data.name} ${data.name === 'You' ? 'say' : 'says'}: ${data.message}`;
             log.appendChild(div);
             textInput.textContent = '';
+            textInput.focus();
             log.scrollTo(0, log.scrollHeight);
         }
     </script>
